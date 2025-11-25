@@ -149,4 +149,35 @@ class Pedido
         $stmt->execute([':id' => $pedidoId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function buscarPorId($id)
+{
+    $stmt = $this->conn->prepare("
+        SELECT *
+        FROM pedidos
+        WHERE id = :id
+        LIMIT 1
+    ");
+
+    $stmt->execute([':id' => $id]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+    public function atualizarStatus($id, $status)
+{
+    $stmt = $this->conn->prepare("
+        UPDATE pedidos
+        SET status = :status,
+            updated_at = NOW()
+        WHERE id = :id
+    ");
+
+    return $stmt->execute([
+        ':status' => $status,
+        ':id' => $id
+    ]);
+}
+
 }

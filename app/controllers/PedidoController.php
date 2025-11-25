@@ -90,5 +90,61 @@ class PedidoController extends Controller {
         ]);
     }
     
-    
+    public function aprovar()
+{
+    header("Content-Type: application/json");
+
+    if (empty($_POST['id'])) {
+        echo json_encode(["status" => "erro", "msg" => "ID não enviado"]);
+        return;
+    }
+
+    $pedidoId = $_POST['id'];
+
+    // Buscar dados do pedido no banco
+    $pedidoModel = new Pedido();
+    $pedido = $pedidoModel->buscarPorId($pedidoId);
+
+    if (!$pedido) {
+        echo json_encode(["status" => "erro", "msg" => "Pedido não encontrado"]);
+        return;
+    }
+
+    // Prepara payload para API da Precode
+    $payload = [
+        "pedido" => [
+            "codigoPedido" => 0,
+            "idPedidoParceiro" => 4565465
+        ]
+    ];
+
+    error_log("[APROVAR] Enviando para Precode:");
+    error_log(json_encode($payload, JSON_PRETTY_PRINT));
+
+    $res = ApiClient::put("/v1/pedido/pedido", $payload);
+
+    error_log("[APROVAR] Resposta da Precode:");
+    error_log(print_r($res, true));
+
+    if ($res['http_code'] != 200 && $res['http_code'] != 201) {
+        echo json_encode(["status" => "erro", "api" => $res]);
+        return;
+    }
+
+    $ret = $res['body']['pedido'] ?? null;
+
+    if (!$ret) {
+        echo json_encode(["status" => "erro", "msg" => "API não retornou estrutura de pedido"]);
+        return;
+    }
+
+    // Atualizar status localmente
+    $pedidoModel->atualizarStatus($pedidoId, "aprovado");
+
+    echo json_encode([
+        "status" => "sucesso",
+        "pedido" => $ret
+    ]);
+}
+
 }
