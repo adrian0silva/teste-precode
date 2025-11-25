@@ -1,6 +1,8 @@
 <?php
 class Controller
-{
+    {    public function __construct() {
+        // inicializações globais da aplicação
+    }
     protected function render(string $view, array $data = [])
     {
         extract($data);

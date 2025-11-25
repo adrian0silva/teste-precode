@@ -8,6 +8,7 @@ class ApiClient {
         $ch = curl_init();
         $json = json_encode($data);
         curl_setopt_array($ch, [
+            CURLOPT_URL => $url,    
             CURLOPT_POST => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => [

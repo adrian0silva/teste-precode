@@ -247,8 +247,8 @@
         <div class="field">
             <label>Status *</label>
             <select id="status">
-                <option value="enabled">enabled</option>
-                <option value="disabled">disabled</option>
+                <option value="enabled">habilitado</option>
+                <option value="disabled">desabilitado</option>
             </select>
         </div>
 
@@ -371,7 +371,7 @@ function addSpec(btn) {
     btn.previousElementSibling.appendChild(box);
 }
 
-document.getElementById("produtoForm").addEventListener("submit", function(e){
+document.getElementById("form-produto").addEventListener("submit", async function(e){
     e.preventDefault();
 
     const productJSON = {
@@ -422,7 +422,26 @@ document.getElementById("produtoForm").addEventListener("submit", function(e){
     document.getElementById("resultado").textContent = JSON.stringify(productJSON, null, 2);
 
     // Depois isso vai ser enviado ao PHP:
-    // fetch('../api/enviar_produto.php', { method: 'POST', body: JSON.stringify(productJSON) })
+    try {
+            const resposta = await fetch("/produto/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(productJSON)
+            });
+
+            const json = await resposta.json();
+
+            resultado.style.display = "block";
+            resultado.style.background = json.status === "erro" ? "#ffdddd" : "#ddffdd";
+            resultado.innerText = JSON.stringify(json, null, 2);
+
+        } catch (error) {
+            resultado.style.display = "block";
+            resultado.style.background = "#ffdddd";
+            resultado.innerText = "Erro ao enviar o produto: " + error;
+        }
 });
     </script>
 </body>
