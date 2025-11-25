@@ -3,9 +3,9 @@
 class Database {
 
     private $host = "localhost";
-    private $dbname = "precode";
+    private $dbname = "precodeteste";
     private $user = "postgres";
-    private $pass = "suasenha";
+    private $pass = "postgres";
 
     public $conn;
 

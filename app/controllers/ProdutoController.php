@@ -1,6 +1,5 @@
 <?php
-require_once __DIR__ . "/../helpers/ApiClient.php";
-require_once __DIR__ ."/../models/Produto.php";
+
 class ProdutoController extends Controller {
     public function __construct() {
         parent::__construct();
@@ -9,7 +8,17 @@ class ProdutoController extends Controller {
     public function index() {
         $this->render('produto.create', ['title' => 'CadastroProduto', 'Bem vindo a tela de cadastro de produto']);
     }
+    public function listar() {
 
+        // Carrega do banco (exemplo)
+        $produtoModel = new Produto();
+        $produtos = $produtoModel->listarTodos();
+
+        return $this->render('produto.listar', [
+            'title' => 'Listagem de Produtos',
+            'produtos' => $produtos
+        ]);
+    }
     public function create() {
         header('Content-Type: application/json');
             
@@ -131,4 +140,46 @@ class ProdutoController extends Controller {
             $message = "Erro: " . ($res['body']['message'] ?? $res['error']);
         }
     }
+
+    public function updateInventory()
+{
+    header("Content-Type: application/json");
+
+    $json = file_get_contents("php://input");
+    $data = json_decode($json, true);
+
+    if (!$data || empty($data['products'])) {
+        echo json_encode([
+            "status" => "erro",
+            "message" => "Payload inválido"
+        ]);
+        return;
+    }
+
+    // Payload já vem pronto do JavaScript
+    $products = $data['products'];
+
+    // Chama API oficial PUT /v3/products/inventory
+    $res = ApiClient::put('/products/inventory', [
+        "products" => $products
+    ]);
+
+    // Salvar no banco o novo preço/estoque
+    if ($res['http_code'] >= 200 && $res['http_code'] < 300) {
+
+        $model = new Produto();
+        $model->atualizaPrecoEstoque($products);
+
+        echo json_encode([
+            "status" => "sucesso",
+            "retorno" => $res['body']
+        ]);
+    } else {
+        echo json_encode([
+            "status" => "erro",
+            "message" => $res['body'] ?? $res['error']
+        ]);
+    }
+}
+
 }

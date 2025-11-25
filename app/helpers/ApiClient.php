@@ -24,4 +24,69 @@ class ApiClient {
         curl_close($ch);
         return ['http_code' => $info['http_code'] ?? 0, 'body' => json_decode($resp, true), 'error' => $err];
     }
+
+    public static function put($path, array $data)
+    {
+        $url = self::$base . $path;
+        $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    
+        // =======================================
+        // LOG — REQUISIÇÃO SENDO ENVIADA
+        // =======================================
+        error_log("\n==================== API PUT REQUEST ====================");
+        error_log("URL:      {$url}");
+        error_log("PAYLOAD:");
+        error_log($json);
+        error_log("TAMANHO JSON: " . strlen($json) . " bytes");
+        error_log("==========================================================\n");
+    
+        $ch = curl_init();
+    
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "PUT",
+            CURLOPT_POSTFIELDS => $json,
+            CURLOPT_HTTPHEADER => [
+                "Authorization: " . self::$token,
+                "Content-Type: application/json",
+                "Content-Length: " . strlen($json)
+            ]
+        ]);
+    
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    
+        // =======================================
+        // LOG — POSSÍVEL ERRO CURL
+        // =======================================
+        if ($response === false) {
+            $error = curl_error($ch);
+            error_log("[API PUT ERROR] Erro CURL: {$error}");
+            curl_close($ch);
+    
+            return [
+                "error" => $error,
+                "http_code" => $httpCode,
+                "body" => null
+            ];
+        }
+    
+        curl_close($ch);
+    
+        // =======================================
+        // LOG — RESPOSTA RECEBIDA
+        // =======================================
+        error_log("\n==================== API PUT RESPONSE ====================");
+        error_log("HTTP CODE: {$httpCode}");
+        error_log("RAW RESPONSE:");
+        error_log($response);
+        error_log("===========================================================\n");
+    
+        return [
+            "http_code" => $httpCode,
+            "body" => json_decode($response, true)
+        ];
+    }
+    
 }

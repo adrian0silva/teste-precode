@@ -207,7 +207,7 @@
         <div class="brand">Menu Principal</div>
         <nav class="nav">
             <a href="#" class="active">Cadastrar Produto</a>
-            <a href="/pedido">Gerenciar Produtos</a>
+            <a href="/produto/listar">Gerenciar Produtos</a>
             <a href="/pedido">Pedidos</a>
         </nav>
     </aside>

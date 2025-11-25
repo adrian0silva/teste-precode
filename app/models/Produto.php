@@ -1,6 +1,7 @@
 <?php
 
-require_once __DIR__ . "/../config/db.php";
+require __DIR__ . '/../core/Database.php';
+
 class Produto
 {
     private $conn;
@@ -27,50 +28,81 @@ class Produto
     public function salvarBanco(array $produto): void
     {
         try {
-            // SKU pai real
-            $sku = $produto['codigoAgrupador'] ?? null;
+            error_log("=== [salvarBanco] INICIANDO SALVAMENTO ===");
+            error_log("Produto recebido: " . print_r($produto, true));
     
-            if (!$sku) {
-                throw new Exception("SKU não encontrado no retorno da API.");
-            }
+            // Corrigido: nomes iguais ao controller
+            $sku          = $produto['sku'] ?? 0;
+            $name         = $produto['name'] ?? '';
+            $descricao    = $produto['description'] ?? '';
+            $preco        = $produto['price'] ?? 0;
+            $promocional  = $produto['promotional_price'] ?? 0;
+            $marca        = $produto['brand'] ?? '';
+            $categoria    = $produto['category'] ?? '';
+            $subcategory  = $produto['subcategory'] ?? '';
+            $endcategory  = $produto['endcategory'] ?? '';
     
-            $titulo     = $produto['titulo'] ?? '';
-            $descricao  = $produto['descricao'] ?? '';
-            $preco      = $produto['precoSite'] ?? 0;
-            $estoque    = 0; // estoque real pode vir apenas das variações
+            error_log("Valores tratados:");
+            error_log("sku={$sku} name={$name} preco={$preco} promo={$promocional}");
     
+            // ==========================================
             // SALVAR PRODUTO
+            // ==========================================
             $stmt = $this->conn->prepare("
-                INSERT INTO products (sku, titulo, descricao, preco, estoque)
-                VALUES (:sku, :titulo, :descricao, :preco, :estoque)
+                INSERT INTO products 
+                    (sku, name, description, price, promotional_price, brand, category, subcategory, endcategory)
+                VALUES 
+                    (:sku, :name, :description, :price, :promotional_price, :brand, :category, :subcategory, :endcategory)
+                RETURNING id
             ");
     
             $stmt->execute([
-                ':sku'      => $sku,
-                ':titulo'   => $titulo,
-                ':descricao'=> $descricao,
-                ':preco'    => $preco,
-                ':estoque'  => $estoque
+                ':sku' => $sku,
+                ':name' => $name,
+                ':description' => $descricao,
+                ':price' => $preco,
+                ':promotional_price' => $promocional,
+                ':brand' => $marca,
+                ':category' => $categoria,
+                ':subcategory' => $subcategory,
+                ':endcategory' => $endcategory
             ]);
     
-            // SALVAR VARIAÇÕES
-            if (!empty($produto['atributos'])) {
+            $productId = $stmt->fetchColumn();
+            error_log("[salvarBanco] Produto salvo com ID = {$productId}");
     
+            // ==========================================
+            // SALVAR VARIAÇÕES (CORRIGIDO)
+            // ==========================================
+            if (!empty($produto['variations'])) {
+    
+                error_log("[salvarBanco] Salvando variações...");
                 $sqlVar = $this->conn->prepare("
-                    INSERT INTO product_variations (sku_produto, sku_variacao, ref, ean, qty)
-                    VALUES (:sku_produto, :sku_variacao, :ref, :ean, :qty)
+                    INSERT INTO product_variations 
+                        (product_id, ref, sku, qty, ean)
+                    VALUES 
+                        (:product_id, :ref, :sku, :qty, :ean)
                 ");
     
-                foreach ($produto['atributos'] as $v) {
+                foreach ($produto['variations'] as $v) {
+    
+                    error_log("Variação recebida: " . print_r($v, true));
+    
                     $sqlVar->execute([
-                        ':sku_produto'  => $sku,
-                        ':sku_variacao' => $v['sku'] ?? null,
-                        ':ref'          => $v['ref'] ?? '',
-                        ':ean'          => $v['ean'] ?? '',
-                        ':qty'          => $v['qty'] ?? 0
+                        ':product_id' => $productId,
+                        ':ref' => $v['ref'] ?? '',
+                        ':sku' => $v['sku'] ?? null,
+                        ':qty' => $v['qty'] ?? 0,
+                        ':ean' => $v['ean'] ?? ''
                     ]);
+    
+                    error_log("Variação salva com sucesso.");
                 }
+            } else {
+                error_log("[salvarBanco] Nenhuma variação encontrada em \$produto['variations']");
             }
+    
+            error_log("=== [salvarBanco] FINALIZADO ===");
     
         } catch (Exception $e) {
             error_log("[ERRO SALVAR BANCO] " . $e->getMessage());
@@ -78,4 +110,93 @@ class Produto
         }
     }    
 
+    public function listarTodos() {
+        $stmt = $this->conn->prepare("
+            SELECT 
+                p.id,
+                p.sku,
+                p.name,
+                p.price,
+                p.promotional_price,
+                p.brand,
+                p.category,
+                p.subcategory,
+                p.endcategory,
+            MIN(v.ref) AS ref,               
+                MIN(v.sku) AS variation_sku      
+            FROM products p
+            LEFT JOIN product_variations v ON v.product_id = p.id
+            GROUP BY p.id
+            ORDER BY p.id DESC
+        ");
+    
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+        public function atualizaPrecoEstoque($products)
+        {
+            foreach ($products as $p) {
+        
+                $ref = $p['ref'] ?? null;
+                $sku = $p['sku'] ?? null;
+        
+                if (!$ref && !$sku) continue;
+        
+                // 1) Buscar a variação correspondente
+                $sql = "SELECT product_id FROM product_variations 
+                        WHERE ref = :ref OR sku = :sku 
+                        LIMIT 1";
+        
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute([
+                    ':ref' => $ref,
+                    ':sku' => $sku
+                ]);
+        
+                $variation = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+                if (!$variation) {
+                    error_log("Variação não encontrada para ref={$ref} sku={$sku}");
+                    continue;
+                }
+        
+                $product_id = $variation['product_id'];
+        
+                // 2) Atualizar tabela products
+                $sqlProduct = "
+                    UPDATE products
+                    SET price = :price,
+                        promotional_price = :promo,
+                        cost = :cost,
+                        updated_at = NOW()
+                    WHERE id = :id
+                ";
+        
+                $stmt2 = $this->conn->prepare($sqlProduct);
+                $stmt2->execute([
+                    ':price' => $p['price'],
+                    ':promo' => $p['promotional_price'],
+                    ':cost' => $p['cost'],
+                    ':id' => $product_id
+                ]);
+        
+                // 3) Atualizar stock na variação
+                $sqlVar = "
+                    UPDATE product_variations
+                    SET qty = :qty
+                    WHERE product_id = :id AND (ref = :ref OR sku = :sku)
+                ";
+        
+                $stmt3 = $this->conn->prepare($sqlVar);
+                $stmt3->execute([
+                    ':qty' => $p['stock'][0]['availableStock'],
+                    ':id' => $product_id,
+                    ':ref' => $ref,
+                    ':sku' => $sku
+                ]);
+            }
+        }
+        
+        
 }

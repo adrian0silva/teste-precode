@@ -4,7 +4,13 @@ define('APP_PATH', BASE_PATH . '/app');
 define('VIEW_PATH', APP_PATH . '/views');
 
 spl_autoload_register(function ($class) {
-    $paths = [APP_PATH . '/controllers/', APP_PATH . '/models/'];
+    $paths = [
+        APP_PATH . '/core/',
+        APP_PATH . '/controllers/',
+        APP_PATH . '/models/',
+        APP_PATH . '/helpers/'
+    ];
+
     foreach ($paths as $p) {
         $file = $p . $class . '.php';
         if (file_exists($file)) {
