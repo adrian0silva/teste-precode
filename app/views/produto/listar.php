@@ -151,9 +151,15 @@
 
           <pre id="editResult" class="result" style="display:none"></pre>
         </form>
-
+      
       </div>
+      
     </div>
+    <div id="toast"
+          style="position:fixed;bottom:20px;right:20px;background:#4f46e5;
+                  color:#fff;padding:12px 18px;border-radius:6px;display:none;">
+        Estoque atualizado!
+      </div>
   </main>
 
 <script>
@@ -206,19 +212,48 @@
     });
 
     const text = await resp.text();
-    document.getElementById('editResult').style.display = 'block';
-    document.getElementById('editResult').innerText = text;
+    // document.getElementById('editResult').style.display = 'block';
+    // document.getElementById('editResult').innerText = text;
+    document.getElementById('editModal').style.display = 'none';
+    document.getElementById("toast").style.display = "block";
+    setTimeout(() => {
+      document.getElementById("toast").style.display = "none";
+    }, 2000);
 
     try {
       const json = JSON.parse(text);
       if (json && json.products) {
         setTimeout(() => {
+          atualizarLinhaTabela(products[0]);
           document.getElementById('editModal').style.display = 'none';
-          location.reload();
-        }, 800);
+        }, 600);
       }
     } catch (err) {}
   });
+  function atualizarLinhaTabela(p) {
+    const linhas = document.querySelectorAll("tbody tr");
+
+    linhas.forEach(tr => {
+        const sku = tr.children[1].innerText.trim(); // SKU da tabela
+
+        if (sku == p.sku) {
+
+            tr.children[3].innerHTML = "R$ " + p.price.toFixed(2).replace(".", ",");
+            tr.children[4].innerHTML = "R$ " + p.promotional_price.toFixed(2).replace(".", ",");
+
+            tr.children[7].querySelector(".edit-btn").dataset.price = p.price;
+            tr.children[7].querySelector(".edit-btn").dataset.promotional = p.promotional_price;
+            tr.children[7].querySelector(".edit-btn").dataset.cost = p.cost;
+            tr.children[7].querySelector(".edit-btn").dataset.available = p.stock[0].availableStock;
+
+            // feedback visual
+            tr.style.background = "#e0ffe3";
+            setTimeout(() => tr.style.background = "", 1200);
+        }
+    });
+    
+}
+
 </script>
 
 </body>
