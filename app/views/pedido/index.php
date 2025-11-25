@@ -54,14 +54,33 @@
 }
 
 /* CAIXA DO MODAL */
-.modal-box {
-  background: #ffffff;
-  width: 720px;
-  padding: 28px;
-  border-radius: 14px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
-  animation: modalIn .25s ease-out;
+/* --- GRID DO MODAL --- */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
+
+/* --- LINHAS DE INPUTS --- */
+.modal-form .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+}
+
+/* --- INPUTS E SELECTS UNIFORMES --- */
+.modal-form input,
+.modal-form select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d0d5dd;
+  border-radius: 6px;
+  font-size: 15px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
 
 @keyframes modalIn {
   from { transform: translateY(-20px); opacity: 0; }
@@ -250,7 +269,6 @@
             <thead>
               <tr>
                 <th>Número</th>
-                <th class="col-small">Qtd.</th>
                 <th class="col-price">Valor</th>
                 <th class="col-date">Data</th>
                 <th>Status</th>
@@ -281,12 +299,8 @@
         <tr>
             <td><strong><?= $p['id_pedido_parceiro'] ?></strong></td>
 
-            <td class="col-small">
-                <?= $p['quantidade'] ?>
-            </td>
-
             <td class="col-price">
-                R$ <?= number_format($p['valor_unitario'] * $p['quantidade'], 2, ',', '.') ?>
+                R$ <?= $p['valor_total_compra'] ?>
             </td>
 
             <td class="col-date">
@@ -497,7 +511,7 @@ document.getElementById("formNovoPedido").addEventListener("submit", async (e) =
     const precodeResp = await fetch("https://www.replicade.com.br/api/v1/pedido/pedido", {
         method: "POST",
         headers: {
-            "Authorization": "Basic SEU_TOKEN_AQUI",
+            "Authorization": "Basic aXdPMzVLZ09EZnRvOHY3M1I6",
             "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
