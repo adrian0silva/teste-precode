@@ -2,6 +2,10 @@
 require __DIR__ . '/../app/bootstrap.php';
 
 $url = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+// if ($uri === '/produtos/json') {
+//     (new ProdutoController())->json();
+//     exit;
+// }
 $segments = $url === '' ? [] : explode('/', $url);
 
 $controllerName = !empty($segments[0]) ? ucfirst($segments[0]) . 'Controller' : 'ProdutoController';

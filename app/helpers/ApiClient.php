@@ -1,6 +1,6 @@
 <?php
 class ApiClient {
-    private static $base = "https://www.replicade.com.br/api/v3";
+    private static $base = "https://www.replicade.com.br/api";
     private static $token = "Basic aXdPMzVLZ09EZnRvOHY3M1I6";
 
     public static function post($path, array $data) {
@@ -86,6 +86,29 @@ class ApiClient {
         return [
             "http_code" => $httpCode,
             "body" => json_decode($response, true)
+        ];
+    }
+    
+    public static function get($path) {
+        $url = self::$base . $path;
+    
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                "Authorization: " . self::$token
+            ]
+        ]);
+    
+        $response = curl_exec($ch);
+        $http = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    
+        curl_close($ch);
+    
+        return [
+            "http_code" => $http,
+            "body"      => json_decode($response, true)
         ];
     }
     

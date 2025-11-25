@@ -127,7 +127,7 @@ class ProdutoController extends Controller {
 
     error_log("JSON FINAL ENVIADO PARA API: " . json_encode($body));
 
-        $res = ApiClient::post('/products', [ 'product' => $body ]);
+        $res = ApiClient::post('/v3/products', [ 'product' => $body ]);
 
           // Log da resposta da API
     error_log("Resposta da API: " . print_r($res, true));
@@ -160,7 +160,7 @@ class ProdutoController extends Controller {
     $products = $data['products'];
 
     // Chama API oficial PUT /v3/products/inventory
-    $res = ApiClient::put('/products/inventory', [
+    $res = ApiClient::put('/v3/products/inventory', [
         "products" => $products
     ]);
 
@@ -181,5 +181,12 @@ class ProdutoController extends Controller {
         ]);
     }
 }
+public function json() {
+    header("Content-Type: application/json");
 
+    $produtoModel = new Produto();
+    $produtos = $produtoModel->listarTodos();
+
+    echo json_encode($produtos);
+}
 }
