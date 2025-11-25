@@ -296,20 +296,33 @@
             <td><?= $badge ?></td>
 
             <td class="col-actions">
-                <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
-                    <form method="POST" action="/pedido/aprovar" style="margin:0">
-                        <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                        <button class="btn-primary" style="padding:6px 10px;font-size:13px">Aprovar</button>
-                    </form>
 
-                    <form method="POST" action="/pedido/cancelar" style="margin:0">
-                        <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                        <button class="btn-primary" style="background:#dc2626;padding:6px 10px;font-size:13px">
-                            Cancelar
-                        </button>
-                    </form>
-                </div>
-            </td>
+<?php if ($p['status'] === 'novo'): ?>
+
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
+
+    <button class="btn-primary btn-aprovar"
+        data-id="<?= $p['id'] ?>"
+        style="padding:6px 10px;font-size:13px">
+    Aprovar
+</button>
+
+<button class="btn-primary btn-cancelar"
+        data-id="<?= $p['id'] ?>"
+        style="background:#dc2626;padding:6px 10px;font-size:13px">
+    Cancelar
+</button>
+
+    </div>
+
+<?php else: ?>
+
+    <span style="color:#6b7280;font-size:13px;">—</span>
+
+<?php endif; ?>
+
+</td>
+
         </tr>
 
     <?php endforeach; ?>
@@ -328,6 +341,54 @@
   </main>
 
 <script>
+// 👉 Aprovar pedido
+document.querySelectorAll(".btn-aprovar").forEach(btn => {
+    btn.onclick = async () => {
+        const id = btn.dataset.id;
+
+        const resp = await fetch("/pedido/aprovar", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ id })
+        });
+
+        const json = await resp.json();
+        console.log("APROVAR:", json);
+
+        if (json.status === "sucesso") {
+            btn.closest("tr").querySelector("td:nth-child(5)").innerHTML =
+                '<span class="badge blue">Aprovado</span>';
+
+            // remove botões
+            btn.closest("td").innerHTML = '<span style="color:#6b7280;">—</span>';
+        }
+    };
+});
+
+
+// 👉 Cancelar pedido
+document.querySelectorAll(".btn-cancelar").forEach(btn => {
+    btn.onclick = async () => {
+        const id = btn.dataset.id;
+
+        const resp = await fetch("/pedido/cancelar", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ id })
+        });
+
+        const json = await resp.json();
+        console.log("CANCELAR:", json);
+
+        if (json.status === "sucesso") {
+            btn.closest("tr").querySelector("td:nth-child(5)").innerHTML =
+                '<span class="badge red">Cancelado</span>';
+
+            // remove botões
+            btn.closest("td").innerHTML = '<span style="color:#6b7280;">—</span>';
+        }
+    };
+});
 
 // abrir modal
 document.getElementById("btnNovoPedido").onclick = () => {

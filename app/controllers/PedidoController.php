@@ -92,113 +92,45 @@ class PedidoController extends Controller {
     
     public function aprovar()
 {
-    header("Content-Type: application/json");
+    $input = json_decode(file_get_contents("php://input"), true);
+    $id = $input['id'];
 
-    if (empty($_POST['id'])) {
-        echo json_encode(["status" => "erro", "msg" => "ID não enviado"]);
-        return;
-    }
-
-    $pedidoId = $_POST['id'];
-
-    // Buscar dados do pedido no banco
     $pedidoModel = new Pedido();
-    $pedido = $pedidoModel->buscarPorId($pedidoId);
+    $pedido = $pedidoModel->buscarPorId($id);
 
-    if (!$pedido) {
-        echo json_encode(["status" => "erro", "msg" => "Pedido não encontrado"]);
-        return;
-    }
-
-    // Prepara payload para API da Precode
-    $payload = [
+    // Envia aprovação para Precode
+    $resp = ApiClient::put("/v1/pedido/pedido", [
         "pedido" => [
             "codigoPedido" => 0,
             "idPedidoParceiro" => $pedido['id_pedido_parceiro']
         ]
-    ];
-
-    error_log("[APROVAR] Enviando para Precode:");
-    error_log(json_encode($payload, JSON_PRETTY_PRINT));
-
-    $res = ApiClient::put("/v1/pedido/pedido", $payload);
-
-    error_log("[APROVAR] Resposta da Precode:");
-    error_log(print_r($res, true));
-
-    if ($res['http_code'] != 200 && $res['http_code'] != 201) {
-        echo json_encode(["status" => "erro", "api" => $res]);
-        return;
-    }
-
-    $ret = $res['body']['pedido'] ?? null;
-
-    if (!$ret) {
-        echo json_encode(["status" => "erro", "msg" => "API não retornou estrutura de pedido"]);
-        return;
-    }
-
-    // Atualizar status localmente
-    $pedidoModel->atualizarStatus($pedidoId, "aprovado");
-
-    echo json_encode([
-        "status" => "sucesso",
-        "pedido" => $ret
     ]);
+
+    // Atualizar no banco
+    $pedidoModel->atualizarStatus($id, "aprovado");
+
+    echo json_encode(["status" => "sucesso"]);
     }
 
     public function cancelar()
     {
-        header("Content-Type: application/json");
+        $input = json_decode(file_get_contents("php://input"), true);
+        $id = $input['id'];
     
-        if (empty($_POST['id'])) {
-            echo json_encode(["status" => "erro", "msg" => "ID não enviado"]);
-            return;
-        }
-    
-        $pedidoId = $_POST['id'];
-    
-        // Buscar pedido no banco
         $pedidoModel = new Pedido();
-        $pedido = $pedidoModel->buscarPorId($pedidoId);
+        $pedido = $pedidoModel->buscarPorId($id);
     
-        if (!$pedido) {
-            echo json_encode(["status" => "erro", "msg" => "Pedido não encontrado"]);
-            return;
-        }
-    
-        // Payload conforme documentação
-        $payload = [
+        $resp = ApiClient::delete("/v1/pedido/pedido", [
             "pedido" => [
                 "codigoPedido" => 0,
                 "idPedidoParceiro" => $pedido['id_pedido_parceiro']
             ]
-        ];
-    
-        error_log("[CANCELAR] Enviando para API Precode (DELETE)");
-        error_log(json_encode($payload, JSON_PRETTY_PRINT));
-    
-        // Envia DELETE com corpo JSON
-        $res = ApiClient::delete("/v1/pedido/pedido", $payload);
-    
-        error_log("[CANCELAR] Resposta da API:");
-        error_log(print_r($res, true));
-    
-        if (!in_array($res['http_code'], [200, 201, 204])) {
-            echo json_encode(["status" => "erro", "api" => $res]);
-            return;
-        }
-    
-        $ret = $res['body']['pedido'] ?? null;
-    
-        // Atualizar status localmente
-        $pedidoModel->atualizarStatus($pedidoId, "cancelado");
-    
-        echo json_encode([
-            "status" => "sucesso",
-            "pedido" => $ret ?: [],
-            "mensagem" => "Pedido cancelado com sucesso"
         ]);
+    
+        $pedidoModel->atualizarStatus($id, "cancelado");
+    
+        echo json_encode(["status" => "sucesso"]);
     }
+    
     
 }
