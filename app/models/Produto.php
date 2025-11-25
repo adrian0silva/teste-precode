@@ -209,9 +209,6 @@ class Produto
         // Chamada da API
         $res = ApiClient::get($endpoint);
     
-        // LOGAR resposta bruta
-        error_log("[API RESPONSE RAW] " . print_r($res, true));
-    
         // Validar code
         if (!isset($res['http_code'])) {
             error_log("[ERRO] API não retornou http_code!");

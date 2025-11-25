@@ -1,170 +1,320 @@
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gerenciar Pedidos - Precode</title>
   <link rel="stylesheet" href="/css/styles.css">
   <style>
-
     /* Card */
-    .card{background:#fff;border-radius:10px;padding:28px;max-width:1100px;margin:0 auto;box-shadow:0 6px 18px rgba(15,23,42,0.06)}
-    .title{display:flex;align-items:center;gap:10px}
-    .title h2{color:#0f4bd8;font-size:28px;margin-bottom:6px}
-    .lead{color:#64748b;margin-bottom:18px}
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 28px;
+      max-width: 1100px;
+      margin: 0 auto;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06)
+    }
 
-    .panel{background:#fff;border-radius:8px;padding:18px;border:1px solid #0b1220;margin-top:20px}
-    .panel h3{font-size:20px;margin-bottom:8px}
-    .panel p{color:#6b7280;margin-bottom:12px}
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .title h2 {
+      color: #0f4bd8;
+      font-size: 28px;
+      margin-bottom: 6px
+    }
+
+    .lead {
+      color: #64748b;
+      margin-bottom: 18px
+    }
+
+    .panel {
+      background: #fff;
+      border-radius: 8px;
+      padding: 18px;
+      border: 1px solid #0b1220;
+      margin-top: 20px
+    }
+
+    .panel h3 {
+      font-size: 20px;
+      margin-bottom: 8px
+    }
+
+    .panel p {
+      color: #6b7280;
+      margin-bottom: 12px
+    }
 
     /* Table */
-    .table-wrap{overflow:auto}
-    table{width:100%;border-collapse:collapse;margin-top:12px}
-    thead th{background:#fafbfd;text-align:left;padding:14px;border-bottom:1px solid #eef2f7;color:#475569;font-weight:600}
-    tbody td{padding:16px;border-bottom:1px solid #f1f5f9;color:#111827;vertical-align:middle}
-    tbody tr:hover td{background:#fbfdff}
+    .table-wrap {
+      overflow: auto
+    }
 
-    .col-small{text-align:center;width:80px}
-    .col-price{text-align:right;width:130px;font-weight:700}
-    .col-date{text-align:center;width:140px}
-    .col-actions{text-align:center;width:150px}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px
+    }
+
+    thead th {
+      background: #fafbfd;
+      text-align: left;
+      padding: 14px;
+      border-bottom: 1px solid #eef2f7;
+      color: #475569;
+      font-weight: 600
+    }
+
+    tbody td {
+      padding: 16px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #111827;
+      vertical-align: middle
+    }
+
+    tbody tr:hover td {
+      background: #fbfdff
+    }
+
+    .col-small {
+      text-align: center;
+      width: 80px
+    }
+
+    .col-price {
+      text-align: right;
+      width: 130px;
+      font-weight: 700
+    }
+
+    .col-date {
+      text-align: center;
+      width: 140px
+    }
+
+    .col-actions {
+      text-align: center;
+      width: 150px
+    }
 
     /* Badges */
-    .badge{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600}
-    .badge.green{background:#d1fadf;color:#166534}
-    .badge.blue{background:#dbeafe;color:#1e40af}
-    .badge.red{background:#fee2e2;color:#991b1b}
-    .badge.neutral{background:#f3f4f6;color:#6b7280}
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600
+    }
+
+    .badge.green {
+      background: #d1fadf;
+      color: #166534
+    }
+
+    .badge.blue {
+      background: #dbeafe;
+      color: #1e40af
+    }
+
+    .badge.red {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .badge.neutral {
+      background: #f3f4f6;
+      color: #6b7280
+    }
 
     /* Button */
-    .btn-primary{background:#4f46e5;color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px}
-    .btn-primary:hover{background:#4338ca}
+    .btn-primary {
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
 
-    pre.result{white-space:pre-wrap;background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e6edf3;margin-top:12px}
+    .btn-primary:hover {
+      background: #4338ca
+    }
+
+    pre.result {
+      white-space: pre-wrap;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #e6edf3;
+      margin-top: 12px
+    }
 
     /* MODAL FUNDO */
-#modalPedido {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.55);
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
+    #modalPedido {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .55);
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
 
-/* CAIXA DO MODAL */
-/* --- GRID DO MODAL --- */
-.modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
+    /* CAIXA DO MODAL */
+    /* --- GRID DO MODAL --- */
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
 
-/* --- LINHAS DE INPUTS --- */
-.modal-form .row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  width: 100%;
-}
+    /* --- LINHAS DE INPUTS --- */
+    .modal-form .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      width: 100%;
+    }
 
-/* --- INPUTS E SELECTS UNIFORMES --- */
-.modal-form input,
-.modal-form select {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #d0d5dd;
-  border-radius: 6px;
-  font-size: 15px;
-  background: #fff;
-  box-sizing: border-box;
-}
+    /* --- INPUTS E SELECTS UNIFORMES --- */
+    .modal-form input,
+    .modal-form select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d0d5dd;
+      border-radius: 6px;
+      font-size: 15px;
+      background: #fff;
+      box-sizing: border-box;
+    }
 
 
-@keyframes modalIn {
-  from { transform: translateY(-20px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
+    @keyframes modalIn {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
 
-/* TÍTULO */
-.modal-box h2 {
-  font-size: 22px;
-  color: #111827;
-  margin-bottom: 18px;
-  font-weight: 600;
-}
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
 
-/* FORM */
-.modal-form .row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-}
+    /* TÍTULO */
+    .modal-box h2 {
+      font-size: 22px;
+      color: #111827;
+      margin-bottom: 18px;
+      font-weight: 600;
+    }
 
-.modal-form input,
-.modal-form select {
-  flex: 1;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  font-size: 15px;
-  background: #f9fafb;
-  transition: 0.2s;
-}
+    /* FORM */
+    .modal-form .row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
 
-.modal-form input:focus,
-.modal-form select:focus {
-  border-color: #3b82f6;
-  background: #fff;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59,130,246,.15);
-}
+    .modal-form input,
+    .modal-form select {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      font-size: 15px;
+      background: #f9fafb;
+      transition: 0.2s;
+    }
 
-/* SUBTÍTULOS DAS SEÇÕES */
-.modal-box h3 {
-  margin: 18px 0 10px 0;
-  font-size: 18px;
-  color: #374151;
-  font-weight: 600;
-}
+    .modal-form input:focus,
+    .modal-form select:focus {
+      border-color: #3b82f6;
+      background: #fff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, .15);
+    }
 
-/* BOTÕES */
-.modal-footer {
-  text-align: right;
-  margin-top: 16px;
-}
+    /* SUBTÍTULOS DAS SEÇÕES */
+    .modal-box h3 {
+      margin: 18px 0 10px 0;
+      font-size: 18px;
+      color: #374151;
+      font-weight: 600;
+    }
 
-.btn-secondary {
-  background: #9ca3af;
-  color: #fff;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-}
+    /* BOTÕES */
+    .modal-footer {
+      text-align: right;
+      margin-top: 16px;
+    }
 
-.btn-secondary:hover {
-  background: #6b7280;
-}
+    .btn-secondary {
+      background: #9ca3af;
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
 
-.btn-primary {
-  background: #4f46e5;
-  color: #fff;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-}
+    .btn-secondary:hover {
+      background: #6b7280;
+    }
 
-.btn-primary:hover {
-  background: #4338ca;
-}
+    .btn-primary {
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
 
+    .btn-primary:hover {
+      background: #4338ca;
+    }
+
+    .item-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 60px;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .item-row select,
+    .item-row input {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .btn-remove {
+      background: #dc2626;
+      color: #fff;
+      border: none;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
+
 <body>
   <aside class="sidebar">
     <div class="brand">HUB Precode</div>
@@ -183,80 +333,78 @@
       <p class="lead">Crie e gerencie pedidos do marketplace</p>
 
       <div style="text-align:right;margin-top:10px;margin-bottom:8px;">
-      <button class="btn-primary" id="btnNovoPedido">➕ Novo Pedido</button>
-<!-- MODAL NOVO PEDIDO -->
-<div id="modalPedido">
-  <div class="modal-box">
+        <button class="btn-primary" id="btnNovoPedido">➕ Novo Pedido</button>
+        <!-- MODAL NOVO PEDIDO -->
+        <div id="modalPedido">
+          <div class="modal-box">
 
-    <h2>➕ Criar Novo Pedido</h2>
+            <h2>➕ Criar Novo Pedido</h2>
 
-    <form id="formNovoPedido" class="modal-form">
+            <form id="formNovoPedido" class="modal-form">
 
-      <div class="row">
-        <input name="idPedidoParceiro" placeholder="Código do Pedido" required />
-        <input name="valorFrete" type="number" step="0.01" placeholder="Frete" required />
-      </div>
+              <div class="row">
+                <input name="idPedidoParceiro" placeholder="Código do Pedido" required />
+                <input name="valorFrete" type="number" step="0.01" placeholder="Frete" required />
+              </div>
 
-      <div class="row">
-        <input name="prazoEntrega" type="number" placeholder="Prazo de Entrega (dias)" />
-        <select name="formaPagamento" required>
-          <option value="">Forma de Pagamento</option>
-          <option value="4">Visa</option>
-          <option value="4">Mastercard</option>
-          <option value="4">Boleto</option>
-          <option value="4">Pix</option>
-        </select>
-      </div>
+              <div class="row">
+                <input name="prazoEntrega" type="number" placeholder="Prazo de Entrega (dias)" />
+                <select name="formaPagamento" required>
+                  <option value="">Forma de Pagamento</option>
+                  <option value="4">Visa</option>
+                  <option value="4">Mastercard</option>
+                  <option value="4">Boleto</option>
+                  <option value="4">Pix</option>
+                </select>
+              </div>
 
-      <h3>Dados do Cliente</h3>
+              <h3>Dados do Cliente</h3>
 
-      <div class="row">
-        <input name="cpfCnpj" placeholder="CPF/CNPJ" required />
-        <input name="nomeRazao" placeholder="Nome / Razão Social" required />
-      </div>
+              <div class="row">
+                <input name="cpfCnpj" placeholder="CPF/CNPJ" required />
+                <input name="nomeRazao" placeholder="Nome / Razão Social" required />
+              </div>
 
-      <div class="row">
-        <input name="fantasia" placeholder="Fantasia" required />
-        <input name="email" placeholder="Email" required />
-      </div>
+              <div class="row">
+                <input name="fantasia" placeholder="Fantasia" required />
+                <input name="email" placeholder="Email" required />
+              </div>
 
-      <h3>Endereço</h3>
+              <h3>Endereço</h3>
 
-      <div class="row">
-        <input name="cep" placeholder="CEP" required />
-        <input name="endereco" placeholder="Endereço" required />
-      </div>
+              <div class="row">
+                <input name="cep" placeholder="CEP" required />
+                <input name="endereco" placeholder="Endereço" required />
+              </div>
 
-      <div class="row">
-        <input name="numero" placeholder="Número" required />
-        <input name="bairro" placeholder="Bairro" required />
-      </div>
+              <div class="row">
+                <input name="numero" placeholder="Número" required />
+                <input name="bairro" placeholder="Bairro" required />
+              </div>
 
-      <div class="row">
-        <input name="cidade" placeholder="Cidade" required />
-        <input name="uf" placeholder="UF" maxlength="2" required />
-      </div>
+              <div class="row">
+                <input name="cidade" placeholder="Cidade" required />
+                <input name="uf" placeholder="UF" maxlength="2" required />
+              </div>
 
-      <h3>Itens</h3>
+              <h3>Itens</h3>
+              <div id="itemsList"></div>
 
-      <div class="row">
-      <select name="sku" id="selectProdutos" required style="padding:10px;border:1px solid #ddd;border-radius:6px;width:100%;">
-        <option value="">Selecione um produto...</option>
-        </select>
-        <input name="valorUnitario" type="number" step="0.01" placeholder="Valor Unitário" required />
-        <input name="quantidade" type="number" placeholder="Quantidade" required />
-      </div>
+              <button type="button" class="btn-primary" style="margin-top:10px;background:#475569"
+                onclick="addItem()">
+                ➕ Adicionar Item
+              </button>
 
-      <div class="modal-footer">
-        <button type="button" id="btnCancelarModal" class="btn-secondary">Cancelar</button>
-        <button type="submit" class="btn-primary">Enviar Pedido</button>
-      </div>
+              <div class="modal-footer">
+                <button type="button" id="btnCancelarModal" class="btn-secondary">Cancelar</button>
+                <button type="submit" class="btn-primary">Enviar Pedido</button>
+              </div>
 
-      <pre id="resultadoPedido" style="display:none; margin-top:14px;"></pre>
-    </form>
+              <pre id="resultadoPedido" style="display:none; margin-top:14px;"></pre>
+            </form>
 
-  </div>
-</div>
+          </div>
+        </div>
 
       </div>
 
@@ -276,72 +424,72 @@
               </tr>
             </thead>
             <tbody>
-            <?php if (empty($pedidos)): ?>
-    <tr>
-        <td colspan="8" style="text-align:center; color:#94a3b8; padding:18px;">
-            Nenhum pedido encontrado
-        </td>
-    </tr>
-<?php else: ?>
+              <?php if (empty($pedidos)): ?>
+                <tr>
+                  <td colspan="8" style="text-align:center; color:#94a3b8; padding:18px;">
+                    Nenhum pedido encontrado
+                  </td>
+                </tr>
+              <?php else: ?>
 
-    <?php foreach ($pedidos as $p): ?>
+                <?php foreach ($pedidos as $p): ?>
 
-        <?php
-        // Badge de status
-        $badge = match ($p['status']) {
-            'aprovado'   => '<span class="badge blue">Aprovado</span>',
-            'cancelado'  => '<span class="badge red">Cancelado</span>',
-            'processado' => '<span class="badge green">Processado</span>',
-            default      => '<span class="badge neutral">Pendente</span>',
-        };
-        ?>
+                  <?php
+                  // Badge de status
+                  $badge = match ($p['status']) {
+                    'aprovado'   => '<span class="badge blue">Aprovado</span>',
+                    'cancelado'  => '<span class="badge red">Cancelado</span>',
+                    'processado' => '<span class="badge green">Processado</span>',
+                    default      => '<span class="badge neutral">Pendente</span>',
+                  };
+                  ?>
 
-        <tr>
-            <td><strong><?= $p['id_pedido_parceiro'] ?></strong></td>
+                  <tr>
+                    <td><strong><?= $p['id_pedido_parceiro'] ?></strong></td>
 
-            <td class="col-price">
-                R$ <?= $p['valor_total_compra'] ?>
-            </td>
+                    <td class="col-price">
+                      R$ <?= $p['valor_total_compra'] ?>
+                    </td>
 
-            <td class="col-date">
-                <?= date('d/m/Y H:i', strtotime($p['created_at'])) ?>
-            </td>
+                    <td class="col-date">
+                      <?= date('d/m/Y H:i', strtotime($p['created_at'])) ?>
+                    </td>
 
-            <td><?= $badge ?></td>
+                    <td><?= $badge ?></td>
 
-            <td class="col-actions">
+                    <td class="col-actions">
 
-<?php if ($p['status'] === 'novo'): ?>
+                      <?php if ($p['status'] === 'novo'): ?>
 
-    <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
+                        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
 
-    <button class="btn-primary btn-aprovar"
-        data-id="<?= $p['id'] ?>"
-        style="padding:6px 10px;font-size:13px">
-    Aprovar
-</button>
+                          <button class="btn-primary btn-aprovar"
+                            data-id="<?= $p['id'] ?>"
+                            style="padding:6px 10px;font-size:13px">
+                            Aprovar
+                          </button>
 
-<button class="btn-primary btn-cancelar"
-        data-id="<?= $p['id'] ?>"
-        style="background:#dc2626;padding:6px 10px;font-size:13px">
-    Cancelar
-</button>
+                          <button class="btn-primary btn-cancelar"
+                            data-id="<?= $p['id'] ?>"
+                            style="background:#dc2626;padding:6px 10px;font-size:13px">
+                            Cancelar
+                          </button>
 
-    </div>
+                        </div>
 
-<?php else: ?>
+                      <?php else: ?>
 
-    <span style="color:#6b7280;font-size:13px;">—</span>
+                        <span style="color:#6b7280;font-size:13px;">—</span>
 
-<?php endif; ?>
+                      <?php endif; ?>
 
-</td>
+                    </td>
 
-        </tr>
+                  </tr>
 
-    <?php endforeach; ?>
+                <?php endforeach; ?>
 
-<?php endif; ?>
+              <?php endif; ?>
             </tbody>
           </table>
         </div>
@@ -354,66 +502,121 @@
     </section>
   </main>
 
-<script>
-// 👉 Aprovar pedido
-document.querySelectorAll(".btn-aprovar").forEach(btn => {
-    btn.onclick = async () => {
+  <script>
+    let itemCount = 0;
+
+    function addItem() {
+    itemCount++;
+
+    const div = document.createElement("div");
+    div.classList.add("item-row");
+    div.setAttribute("data-item", itemCount);
+
+    div.innerHTML = `
+        <select class="item-produto" required>
+            <option value="">Selecione um produto...</option>
+        </select>
+
+        <input type="number" class="item-valor" step="0.01" placeholder="Valor Unitário" readonly>
+        <input type="number" class="item-qtd" placeholder="Qtd" required>
+
+        <button type="button" class="btn-remove">✕</button>
+    `;
+
+    document.getElementById("itemsList").appendChild(div);
+
+    // Botão remover
+    div.querySelector(".btn-remove").onclick = () => div.remove();
+
+    // Preenche select com produtos
+    fetch("/produto/json")
+        .then(r => r.json())
+        .then(lista => {
+            const select = div.querySelector(".item-produto");
+            lista.forEach(p => {
+                select.innerHTML += `
+                    <option value="${p.id}" data-sku="${p.sku}" data-price="${p.price}">
+                        ${p.sku} — ${p.name} — R$ ${parseFloat(p.price).toFixed(2)}
+                    </option>
+                `;
+            });
+        });
+
+    // Atualiza valorUnitario ao selecionar produto
+    div.querySelector(".item-produto").addEventListener("change", function() {
+        const selected = this.options[this.selectedIndex];
+        const price = selected.dataset.price || 0;
+        div.querySelector(".item-valor").value = parseFloat(price).toFixed(2);
+    });
+}
+
+    // 👉 Aprovar pedido
+    document.querySelectorAll(".btn-aprovar").forEach(btn => {
+      btn.onclick = async () => {
         const id = btn.dataset.id;
 
         const resp = await fetch("/pedido/aprovar", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ id })
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            id
+          })
         });
 
         const json = await resp.json();
         console.log("APROVAR:", json);
 
         if (json.status === "sucesso") {
-            btn.closest("tr").querySelector("td:nth-child(5)").innerHTML =
-                '<span class="badge blue">Aprovado</span>';
+          btn.closest("tr").querySelector("td:nth-child(5)").innerHTML =
+            '<span class="badge blue">Aprovado</span>';
 
-            // remove botões
-            btn.closest("td").innerHTML = '<span style="color:#6b7280;">—</span>';
+          // remove botões
+          btn.closest("td").innerHTML = '<span style="color:#6b7280;">—</span>';
         }
-    };
-});
+      };
+    });
 
 
-// 👉 Cancelar pedido
-document.querySelectorAll(".btn-cancelar").forEach(btn => {
-    btn.onclick = async () => {
+    // 👉 Cancelar pedido
+    document.querySelectorAll(".btn-cancelar").forEach(btn => {
+      btn.onclick = async () => {
         const id = btn.dataset.id;
 
         const resp = await fetch("/pedido/cancelar", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ id })
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            id
+          })
         });
 
         const json = await resp.json();
         console.log("CANCELAR:", json);
 
         if (json.status === "sucesso") {
-            btn.closest("tr").querySelector("td:nth-child(5)").innerHTML =
-                '<span class="badge red">Cancelado</span>';
+          btn.closest("tr").querySelector("td:nth-child(5)").innerHTML =
+            '<span class="badge red">Cancelado</span>';
 
-            // remove botões
-            btn.closest("td").innerHTML = '<span style="color:#6b7280;">—</span>';
+          // remove botões
+          btn.closest("td").innerHTML = '<span style="color:#6b7280;">—</span>';
         }
-    };
-});
+      };
+    });
 
-// abrir modal
-document.getElementById("btnNovoPedido").onclick = () => {
-    document.getElementById("modalPedido").style.display = "flex";
-    fetch("/produto/json")
-    .then(r => r.json())
-    .then(lista => {
-        let select = document.getElementById("selectProdutos");
-        select.innerHTML = '<option value="">Selecione um produto...</option>';
+    // abrir modal
+    document.getElementById("btnNovoPedido").onclick = () => {
+      document.getElementById("modalPedido").style.display = "flex";
+      fetch("/produto/json")
+        .then(r => r.json())
+        .then(lista => {
+          let select = document.getElementById("selectProdutos");
+          select.innerHTML = '<option value="">Selecione um produto...</option>';
 
-        lista.forEach(p => {
+          lista.forEach(p => {
             const nome = p.name || "Sem nome";
             select.innerHTML += `
                     <option value="${p.id}"
@@ -421,114 +624,132 @@ document.getElementById("btnNovoPedido").onclick = () => {
                             data-ref="${p.ref}">
                         ${p.sku} — ${p.name}
                     </option>`;
-        });
-    })
-    .catch(e => console.error("Erro ao carregar produtos:", e));
-};
+          });
+        })
+        .catch(e => console.error("Erro ao carregar produtos:", e));
+    };
 
-// fechar modal
-document.getElementById("btnCancelarModal").onclick = () => {
-    document.getElementById("modalPedido").style.display = "none";
-};
-
-
-// enviar para API local + Precode
-document.getElementById("formNovoPedido").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const f = new FormData(e.target);
-    const dados = Object.fromEntries(f.entries());
-    const select = document.getElementById("selectProdutos");
-    console.log("select")
-    console.log(select)
-    const idProduto = select.value;
-    console.log("idProduto")
-    console.log(idProduto)
-    // monta JSON para Precode
-    const payload = {
-        pedido: {
-            idPedidoParceiro: dados.idPedidoParceiro,
-            valorFrete: parseFloat(dados.valorFrete),
-            prazoEntrega: parseInt(dados.prazoEntrega) || 0,
-            valorTotalCompra: parseFloat(dados.valorUnitario) * parseInt(dados.quantidade)
-                              + parseFloat(dados.valorFrete),
-
-            formaPagamento: dados.formaPagamento,
-
-            dadosCliente: {
-                cpfCnpj: dados.cpfCnpj,
-                nomeRazao: dados.nomeRazao,
-                fantasia: dados.fantasia,
-                sexo: "",
-                dataNascimento: "",
-                email: dados.email,
-
-                dadosEntrega: {
-                    cep: dados.cep,
-                    endereco: dados.endereco,
-                    numero: dados.numero,
-                    bairro: dados.bairro,
-                    complemento: "",
-                    cidade: dados.cidade,
-                    uf: dados.uf,
-                    responsavelRecebimento: dados.nomeRazao
-                },
-
-                telefones: {
-                    residencial: "00000000",
-                    comercial: "",
-                    celular: "00000000"
-                }
-            },
-
-            pagamento: [{
-                valor: parseFloat(dados.valorUnitario) * parseInt(dados.quantidade),
-                quantidadeParcelas: 1,
-                meioPagamento: dados.formaPagamento
-            }],
-
-            itens: [{
-                idProduto: parseInt(idProduto),
-                sku: parseInt(dados.sku),
-                valorUnitario: parseFloat(dados.valorUnitario),
-                quantidade: parseInt(dados.quantidade)
-            }]
-        }
+    // fechar modal
+    document.getElementById("btnCancelarModal").onclick = () => {
+      document.getElementById("modalPedido").style.display = "none";
     };
 
 
-    // Enviar para sua API local (salvar banco)
-    const localResp = await fetch("/pedido/salvar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
+    // enviar para API local + Precode
+    document.getElementById("formNovoPedido").addEventListener("submit", async (e) => {
 
-    const localJson = await localResp.json();
+      e.preventDefault();
+
+      const f = new FormData(e.target);
+      const dados = Object.fromEntries(f.entries());
+      const select = document.getElementById("selectProdutos");
+      console.log("select")
+      console.log(select)
+
+      // montar itens dinamicamente
+      const itens = [];
+
+      document.querySelectorAll(".item-row").forEach(row => {
+        const select = row.querySelector(".item-produto");
+        const idProduto = select.value;
+        const sku = select.options[select.selectedIndex].dataset.sku;
+        const valorUnitario = parseFloat(row.querySelector(".item-valor").value);
+        const quantidade = parseInt(row.querySelector(".item-qtd").value);
+
+        itens.push({
+          idProduto: parseInt(idProduto),
+          sku,
+          valorUnitario,
+          quantidade
+        });
+      });
+
+      // calcular valor total somando tudo
+      let totalItens = itens.reduce((s, i) => s + (i.valorUnitario * i.quantidade), 0);
+      let valorTotal = totalItens + parseFloat(dados.valorFrete);
+
+      // monta JSON para Precode
+      const payload = {
+        pedido: {
+          idPedidoParceiro: dados.idPedidoParceiro,
+          valorFrete: parseFloat(dados.valorFrete),
+          prazoEntrega: parseInt(dados.prazoEntrega) || 0,
+          valorTotalCompra: valorTotal,
+
+          formaPagamento: dados.formaPagamento,
+
+          dadosCliente: {
+            cpfCnpj: dados.cpfCnpj,
+            nomeRazao: dados.nomeRazao,
+            fantasia: dados.fantasia,
+            sexo: "",
+            dataNascimento: "",
+            email: dados.email,
+
+            dadosEntrega: {
+              cep: dados.cep,
+              endereco: dados.endereco,
+              numero: dados.numero,
+              bairro: dados.bairro,
+              complemento: "",
+              cidade: dados.cidade,
+              uf: dados.uf,
+              responsavelRecebimento: dados.nomeRazao
+            },
+
+            telefones: {
+              residencial: "00000000",
+              comercial: "",
+              celular: "00000000"
+            }
+          },
+
+          pagamento: [{
+            valor: parseFloat(dados.valorUnitario) * parseInt(dados.quantidade),
+            quantidadeParcelas: 1,
+            meioPagamento: dados.formaPagamento
+          }],
+
+          itens: itens
+        }
+      };
 
 
-    // Enviar para API PRECODE
-    const precodeResp = await fetch("https://www.replicade.com.br/api/v1/pedido/pedido", {
+      // Enviar para sua API local (salvar banco)
+      const localResp = await fetch("/pedido/salvar", {
         method: "POST",
         headers: {
-            "Authorization": "Basic aXdPMzVLZ09EZnRvOHY3M1I6",
-            "Content-Type": "application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
-    });
+      });
 
-    const precodeJson = await precodeResp.json();
+      const localJson = await localResp.json();
 
 
-    const result = document.getElementById("resultadoPedido");
-    result.style.display = "block";
-    result.innerText =
+      // Enviar para API PRECODE
+      const precodeResp = await fetch("https://www.replicade.com.br/api/v1/pedido/pedido", {
+        method: "POST",
+        headers: {
+          "Authorization": "Basic aXdPMzVLZ09EZnRvOHY3M1I6",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const precodeJson = await precodeResp.json();
+
+
+      const result = document.getElementById("resultadoPedido");
+      result.style.display = "block";
+      result.innerText =
         "LOCAL API:\n" + JSON.stringify(localJson, null, 2) +
         "\n\nPREC0DE:\n" + JSON.stringify(precodeJson, null, 2);
 
-    setTimeout(() => location.reload(), 1200);
-});
+      setTimeout(() => location.reload(), 1200);
+    });
 
-</script>
+  </script>
 </body>
+
 </html>

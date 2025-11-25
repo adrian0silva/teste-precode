@@ -11,7 +11,6 @@ class PedidoController extends Controller {
     {
         header("Content-Type: application/json");
         
-
         $json = file_get_contents("php://input");
         $data = json_decode($json, true);
     
@@ -21,50 +20,39 @@ class PedidoController extends Controller {
         }
     
         $pedido = $data['pedido'];
-        error_log('[PEDIDO] JSON Recebido:' . print_r($pedido, true));
-        // ===============================
-        // 1. PEGAR SKU LOCAL
-        // ===============================
-        $idProduto = $pedido['itens'][0]['idProduto'];
-        $skuDigitado = $pedido['itens'][0]['sku'];
-    
-        // ===============================
-        // 2. BUSCAR REF NO BANCO
-        // ===============================
+        
         $produtoModel = new Produto();
-        $ref = $produtoModel->obterRefPorSkuLocal($idProduto);
-        error_log("Sku Digitado: ".print_r($skuDigitado,true));
-        error_log("Ref Valido: ".print_r($ref,true));
-        if (!$ref) {
-            echo json_encode(["status" => "erro", "msg" => "REF não encontrado para o SKU local"]);
-            return;
-        }
-    
-        // ===============================
-        // 3. PEGAR SKU VÁLIDO DA PRECODE
-        // ===============================
-        $skuValido = $produtoModel->obterSkuPrecodePorRef($ref);
+        
+        foreach ($pedido['itens'] as $i => $item) {
+            $idProduto = $item['idProduto'];
+            
+            $ref = $produtoModel->obterRefPorSkuLocal($idProduto);
+            
+            if (!$ref) {
+                echo json_encode([
+                    "status" => "erro", 
+                    "msg" => "REF não encontrada para idProduto $idProduto"
+                ]);
+                continue;
+            }
+            
+            $skuValido = $produtoModel->obterSkuPrecodePorRef(ref: $ref);
 
-        if (!$skuValido) {
-            echo json_encode(["status" => "erro", "msg" => "SKU da Precode não encontrado"]);
-            return;
+            if (!$skuValido) {
+                echo json_encode([
+                    "status" => "erro", 
+                    "msg" => "SKU da Precode não encontrado para REF $ref"
+                ]);
+                continue;
+            }
+            
+            $pedido['itens'][$i]['sku'] = $skuValido;
         }
-    
-        // ===============================
-        // 4. SUBSTITUIR NO JSON DO PEDIDO
-        // ===============================
-        $pedido['itens'][0]['sku'] = $skuValido;
-    
-        error_log("[PEDIDO] SKU VALIDO DA PRECODE: $skuValido");
-    
-        // ===============================
-        // 5. ENVIAR PARA API DA PRECODE
-        // ===============================
-        $res = ApiClient::post("/v1/pedido/pedido", ["pedido" => $pedido]);
-    
-        error_log("[PEDIDO] Resposta API:");
-        error_log(print_r($res, true));
-    
+        
+        $payload = ["pedido" => $pedido];
+        
+        $res = ApiClient::post("/v1/pedido/pedido", $payload);
+            
         if ($res['http_code'] != 200 && $res['http_code'] != 201) {
             echo json_encode(["status" => "erro", "api" => $res]);
             return;
@@ -76,10 +64,7 @@ class PedidoController extends Controller {
             echo json_encode(["status" => "erro", "msg" => "API não retornou pedido"]);
             return;
         }
-    
-        // ===============================
-        // 6. SALVAR NO BANCO LOCAL
-        // ===============================
+
         $pedidoModel = new Pedido();
         $pedidoId = $pedidoModel->salvarPedido($pedido, $ret['numeroPedido']);
     
