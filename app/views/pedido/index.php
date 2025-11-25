@@ -4,20 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gerenciar Pedidos - Precode</title>
+  <link rel="stylesheet" href="/css/styles.css">
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Inter,Arial,Helvetica,sans-serif;background:#f3f4f6;color:#0b1220;min-height:100vh;display:flex}
-
-    /* Sidebar */
-    .sidebar{width:260px;background:#0f1724;color:#e6edf3;padding:28px;display:flex;flex-direction:column;gap:22px}
-    .brand{font-weight:700;font-size:18px}
-    .nav{display:flex;flex-direction:column;gap:6px}
-    .nav a{display:block;padding:10px 12px;color:#cbd5e1;text-decoration:none;border-radius:8px}
-    .nav a.active,.nav a:hover{background:#111827;color:#fff}
-
-    /* Main */
-    .main{flex:1;padding:28px 36px}
-    header h1{font-size:20px;margin-bottom:18px}
 
     /* Card */
     .card{background:#fff;border-radius:10px;padding:28px;max-width:1100px;margin:0 auto;box-shadow:0 6px 18px rgba(15,23,42,0.06)}
@@ -160,20 +148,15 @@
 </head>
 <body>
   <aside class="sidebar">
-    <div class="brand">Menu Principal</div>
+    <div class="brand">HUB Precode</div>
     <nav class="nav">
-      <a href="#">Dashboard</a>
-      <a href="/public/form_produto.html">Cadastrar Produto</a>
-      <a href="/public/gerenciar_produtos.html">Gerenciar Produtos</a>
+      <a href="/">Cadastrar Produto</a>
+      <a href="/produto/listar">Gerenciar Produtos</a>
       <a href="#" class="active">Pedidos</a>
     </nav>
   </aside>
 
   <main class="main">
-    <header>
-      <h1>HUB de Integração - Precode</h1>
-    </header>
-
     <section class="card">
       <div class="title">
         <h2>🧾 Gerenciar Pedidos</h2>

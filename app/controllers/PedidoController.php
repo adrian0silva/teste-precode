@@ -114,7 +114,7 @@ class PedidoController extends Controller {
     $payload = [
         "pedido" => [
             "codigoPedido" => 0,
-            "idPedidoParceiro" => 4565465
+            "idPedidoParceiro" => $pedido['id_pedido_parceiro']
         ]
     ];
 
@@ -145,6 +145,60 @@ class PedidoController extends Controller {
         "status" => "sucesso",
         "pedido" => $ret
     ]);
-}
+    }
 
+    public function cancelar()
+    {
+        header("Content-Type: application/json");
+    
+        if (empty($_POST['id'])) {
+            echo json_encode(["status" => "erro", "msg" => "ID não enviado"]);
+            return;
+        }
+    
+        $pedidoId = $_POST['id'];
+    
+        // Buscar pedido no banco
+        $pedidoModel = new Pedido();
+        $pedido = $pedidoModel->buscarPorId($pedidoId);
+    
+        if (!$pedido) {
+            echo json_encode(["status" => "erro", "msg" => "Pedido não encontrado"]);
+            return;
+        }
+    
+        // Payload conforme documentação
+        $payload = [
+            "pedido" => [
+                "codigoPedido" => 0,
+                "idPedidoParceiro" => $pedido['id_pedido_parceiro']
+            ]
+        ];
+    
+        error_log("[CANCELAR] Enviando para API Precode (DELETE)");
+        error_log(json_encode($payload, JSON_PRETTY_PRINT));
+    
+        // Envia DELETE com corpo JSON
+        $res = ApiClient::delete("/v1/pedido/pedido", $payload);
+    
+        error_log("[CANCELAR] Resposta da API:");
+        error_log(print_r($res, true));
+    
+        if (!in_array($res['http_code'], [200, 201, 204])) {
+            echo json_encode(["status" => "erro", "api" => $res]);
+            return;
+        }
+    
+        $ret = $res['body']['pedido'] ?? null;
+    
+        // Atualizar status localmente
+        $pedidoModel->atualizarStatus($pedidoId, "cancelado");
+    
+        echo json_encode([
+            "status" => "sucesso",
+            "pedido" => $ret ?: [],
+            "mensagem" => "Pedido cancelado com sucesso"
+        ]);
+    }
+    
 }

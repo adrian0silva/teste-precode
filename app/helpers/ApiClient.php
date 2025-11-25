@@ -111,5 +111,33 @@ class ApiClient {
             "body"      => json_decode($response, true)
         ];
     }
-    
+    public static function delete($path, array $data = [])
+{
+    $url = self::$base . $path;
+    $ch = curl_init();
+    $json = json_encode($data);
+
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_CUSTOMREQUEST => "DELETE",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            "Content-Type: application/json",
+            "Authorization: " . self::$token
+        ],
+        CURLOPT_POSTFIELDS => $json
+    ]);
+
+    $response = curl_exec($ch);
+    $http = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $err = curl_error($ch);
+    curl_close($ch);
+
+    return [
+        "http_code" => $http,
+        "body" => json_decode($response, true),
+        "error" => $err
+    ];
+}
+
 }
