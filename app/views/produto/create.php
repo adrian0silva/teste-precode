@@ -122,7 +122,11 @@
             <button class="btn" type="submit">Cadastrar Produto</button>
             </div>
             </form>
-            <div id="resultado" class="result" style="display:none;"></div>
+            <div id="toast"
+          style="position:fixed;bottom:20px;right:20px;background:#4f46e5;
+                  color:#fff;padding:12px 18px;border-radius:6px;display:none;">
+        Produto cadastrado!
+      </div>
         </section>
     </main>
     <script>

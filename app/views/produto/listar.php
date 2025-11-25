@@ -10,6 +10,72 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
+  <style>
+/* LINHA DE CAMPOS */
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+/* GRUPO (label + input) */
+.field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* LABEL ACIMA DO INPUT */
+.field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+/* INPUTS */
+.field input,
+.field select {
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+
+/* HOVER */
+.field input:hover,
+.field select:hover {
+  background: #f3f4f6;
+}
+
+/* FOCUS */
+.field input:focus,
+.field select:focus {
+  border-color: #4f46e5;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99,102,241,.25);
+}
+
+/* MODAL */
+.modal-box {
+  background: #fff;
+  padding: 26px;
+  border-radius: 12px;
+  width: 700px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.15);
+}
+
+.modal-box h3 {
+  margin-bottom: 18px;
+  font-size: 22px;
+  color: #111827;
+  font-weight: 600;
+}
+
+  </style>
 </head>
 
 <body>
@@ -64,7 +130,7 @@
                 <td><?= $p['name'] ?></td>
                 <td class="col-price">R$ <?= number_format($p['price'], 2, ',', '.') ?></td>
                 <td class="col-price">R$ <?= number_format($p['promotional_price'], 2, ',', '.') ?></td>
-                <td><?= $p['brand'] ?></td>
+                <td><?= $p['brand'] ?></td> 
                 <td><?= $p['category'] ?></td>
                 <td class="col-actions">
     <button class="edit-btn btn"
@@ -99,60 +165,65 @@
 
     <!-- MODAL -->
     <div id="editModal">
-      <div class="modal-box">
+    <div class="modal-box">
 
-        <h3>Editar Preço & Estoque</h3>
+<h3>Editar Preço & Estoque</h3>
 
-        <form id="editForm">
-          <input type="hidden" id="edit_ref">
-          <input type="hidden" id="edit_sku">
+<form id="editForm">
 
-          <div class="form-row">
-            <div style="flex:1">
-              <label>Preço (price)</label>
-              <input id="edit_price" type="number" step="0.01" required>
-            </div>
+  <input type="hidden" id="edit_ref">
+  <input type="hidden" id="edit_sku">
 
-            <div style="flex:1">
-              <label>Promo (promotional_price)</label>
-              <input id="edit_promotional_price" type="number" step="0.01" required>
-            </div>
+  <!-- LINHA 1 -->
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="edit_price">Preço (price)</label>
+      <input id="edit_price" type="number" step="0.01" required>
+    </div>
 
-            <div style="flex:1">
-              <label>Custo (cost)</label>
-              <input id="edit_cost" type="number" step="0.01" required>
-            </div>
-          </div>
+    <div class="form-group">
+      <label for="edit_promotional_price">Promo (promotional_price)</label>
+      <input id="edit_promotional_price" type="number" step="0.01" required>
+    </div>
 
-          <div class="form-row">
-            <div style="flex:1">
-              <label>Shipping Time (dias)</label>
-              <input id="edit_shippingTime" type="number" required>
-            </div>
+    <div class="form-group">
+      <label for="edit_cost">Custo (cost)</label>
+      <input id="edit_cost" type="number" step="0.01" required>
+    </div>
+  </div>
 
-            <div style="flex:1">
-              <label>Status</label>
-              <select id="edit_status">
-                <option value="enabled">enabled</option>
-                <option value="disabled">disabled</option>
-              </select>
-            </div>
+  <!-- LINHA 2 -->
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="edit_shippingTime">Shipping Time (dias)</label>
+      <input id="edit_shippingTime" type="number" required>
+    </div>
 
-            <div style="flex:1">
-              <label>AvailableStock</label>
-              <input id="edit_availableStock" type="number" required>
-            </div>
-          </div>
+    <div class="form-group">
+      <label for="edit_status">Status</label>
+      <select id="edit_status">
+        <option value="enabled">Habilitado</option>
+        <option value="disabled">Desabilitado</option>
+      </select>
+    </div>
 
-          <div class="modal-footer">
-            <button type="button" id="cancelEdit" class="btn btn-outline">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Salvar e Enviar</button>
-          </div>
+    <div class="form-group">
+      <label for="edit_availableStock">AvailableStock</label>
+      <input id="edit_availableStock" type="number" required>
+    </div>
+  </div>
 
-          <pre id="editResult" class="result" style="display:none"></pre>
-        </form>
-      
-      </div>
+  <div class="modal-footer">
+    <button type="button" id="cancelEdit" class="btn btn-outline">Cancelar</button>
+    <button type="submit" class="btn btn-primary">Salvar e Enviar</button>
+  </div>
+
+  <pre id="editResult" class="result" style="display:none"></pre>
+</form>
+</div>
+
+
+
       
     </div>
     <div id="toast"
