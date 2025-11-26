@@ -1,0 +1,72 @@
+🔹 SKU Pai (opcional)
+1234567890
+
+🔹 Nome do Produto (mínimo 20 caracteres)
+Fone de Ouvido Bluetooth Esportivo à Prova d’Água
+
+🔹 Título Curto (opcional)
+Fone Bluetooth Esportivo
+
+🔹 Descrição Completa (mínimo 100 caracteres)
+Fone de ouvido Bluetooth esportivo com alta qualidade sonora, resistente à água IPX5, bateria de longa duração e conexão estável. Ideal para treinos, corridas e uso diário. Design confortável, leve e com microfone integrado para chamadas.
+
+🟩 Informações Técnicas
+🔹 Status
+habilitado
+
+🔹 Preço
+199.90
+
+🔹 Preço Promocional
+149.90
+
+🔹 Custo
+80.00
+
+🔹 Peso (kg)
+0.250
+
+🔹 Largura (cm)
+12
+
+🔹 Altura (cm)
+8
+
+🔹 Comprimento (cm)
+18
+
+🔹 Marca
+TechWave
+
+🔹 Categoria (opcional)
+Eletrônicos > Áudio > Fones Bluetooth
+
+🟧 Variações do Produto (obrigatório pelo menos 1)
+
+Você pode cadastrar cores, tamanhos, etc.
+
+✅ Variação 1
+
+Nome:
+
+Cor
+
+
+Valor:
+
+Preto
+
+
+SKU da variação:
+
+FW-BT-PRETO-01
+
+
+EAN (opcional):
+
+7891234560012
+
+
+Quantidade:
+
+35

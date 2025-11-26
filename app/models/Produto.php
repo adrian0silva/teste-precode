@@ -200,52 +200,38 @@ class Produto
         
     public function obterSkuPrecodePorRef($ref)
     {
-        error_log("=== [PRECODE] Buscando SKU pelo REF ===");
-        error_log("REF recebido: $ref");
-    
-        $endpoint = "/v3/products/query/$ref/ref";
-        error_log("URL chamada: $endpoint");
-    
+        $endpoint = "/v3/products/query/$ref/ref";    
         // Chamada da API
         $res = ApiClient::get($endpoint);
     
         // Validar code
         if (!isset($res['http_code'])) {
-            error_log("[ERRO] API não retornou http_code!");
             return null;
         }
     
         if ($res['http_code'] != 200) {
-            error_log("[ERRO API] Código HTTP: " . $res['http_code']);
             return null;
         }
     
         // Validar corpo
         if (!isset($res['body'])) {
-            error_log("[ERRO] API sem body!");
             return null;
         }
     
         $produto = $res['body']['produto'] ?? null;
     
         if (!$produto) {
-            error_log("[ERRO] API retornou body sem 'produto'");
-            error_log(print_r($res['body'], true));
             return null;
         }
     
         // Validar atributos
         if (!isset($produto['atributos'][0]['sku'])) {
-            error_log("[ERRO] Produto encontrado, mas sem atributos->sku");
-            error_log(print_r($produto, true));
             return null;
         }
     
         // --- SKU válido encontrado ---
         $skuValido = $produto['atributos'][0]['sku'];
-    
-        error_log("[PRECODE] SKU encontrado: $skuValido");
-    
+        
         return $skuValido;
     }
     

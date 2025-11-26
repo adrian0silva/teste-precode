@@ -506,13 +506,13 @@
     let itemCount = 0;
 
     function addItem() {
-    itemCount++;
+      itemCount++;
 
-    const div = document.createElement("div");
-    div.classList.add("item-row");
-    div.setAttribute("data-item", itemCount);
+      const div = document.createElement("div");
+      div.classList.add("item-row");
+      div.setAttribute("data-item", itemCount);
 
-    div.innerHTML = `
+      div.innerHTML = `
         <select class="item-produto" required>
             <option value="">Selecione um produto...</option>
         </select>
@@ -523,32 +523,30 @@
         <button type="button" class="btn-remove">✕</button>
     `;
 
-    document.getElementById("itemsList").appendChild(div);
+      document.getElementById("itemsList").appendChild(div);
 
-    // Botão remover
-    div.querySelector(".btn-remove").onclick = () => div.remove();
+      // Botão remover
+      div.querySelector(".btn-remove").onclick = () => div.remove();
 
-    // Preenche select com produtos
-    fetch("/produto/json")
+      fetch("/produto/json")
         .then(r => r.json())
         .then(lista => {
-            const select = div.querySelector(".item-produto");
-            lista.forEach(p => {
-                select.innerHTML += `
+          const select = div.querySelector(".item-produto");
+          lista.forEach(p => {
+            select.innerHTML += `
                     <option value="${p.id}" data-sku="${p.sku}" data-price="${p.price}">
                         ${p.sku} — ${p.name} — R$ ${parseFloat(p.price).toFixed(2)}
                     </option>
                 `;
-            });
+          });
         });
 
-    // Atualiza valorUnitario ao selecionar produto
-    div.querySelector(".item-produto").addEventListener("change", function() {
+      div.querySelector(".item-produto").addEventListener("change", function() {
         const selected = this.options[this.selectedIndex];
         const price = selected.dataset.price || 0;
         div.querySelector(".item-valor").value = parseFloat(price).toFixed(2);
-    });
-}
+      });
+    }
 
     // 👉 Aprovar pedido
     document.querySelectorAll(".btn-aprovar").forEach(btn => {
@@ -748,7 +746,6 @@
 
       setTimeout(() => location.reload(), 1200);
     });
-
   </script>
 </body>
 

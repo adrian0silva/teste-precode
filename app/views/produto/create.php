@@ -185,6 +185,11 @@
                   color:#fff;padding:12px 18px;border-radius:6px;display:none;">
                 Produto cadastrado!
             </div>
+            <div id="toast-erro"
+                style="position:fixed;bottom:20px;right:20px;background:#4f46e5;
+                  color:#fff;padding:12px 18px;border-radius:6px;display:none;">
+                Erro ao cadastrar o produto cadastrado!
+            </div>
         </section>
     </main>
     <script>
@@ -288,29 +293,20 @@
                 productJSON.product.variations.push(variation);
             });
 
-            document.getElementById("resultado").textContent = JSON.stringify(productJSON, null, 2);
-
             // Depois isso vai ser enviado ao PHP:
-            try {
-                const resposta = await fetch("/produto/create", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(productJSON)
-                });
+          
+        const resposta = await fetch("/produto/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(productJSON)
+        });
 
-                const json = await resposta.json();
+        document.getElementById("toast").style.display = "block";
 
-                resultado.style.display = "block";
-                resultado.style.background = json.status === "erro" ? "#ffdddd" : "#ddffdd";
-                resultado.innerText = JSON.stringify(json, null, 2);
+        setTimeout(() => {
+            document.getElementById("toast").style.display = "none";
+        }, 2000);
 
-            } catch (error) {
-                resultado.style.display = "block";
-                resultado.style.background = "#ffdddd";
-                resultado.innerText = "Erro ao enviar o produto: " + error;
-            }
         });
     </script>
 </body>
